@@ -1,5 +1,6 @@
 import logging
 import asyncio
+from time import sleep
 # from datetime import datetime
 
 from aiogram import Bot, Dispatcher, types
@@ -19,8 +20,16 @@ dp = Dispatcher()
 
 # обработка старт
 @dp.message(Command("start"))
-async def cmd_start(message: types.Message):
-    await message.answer("рад тебя видеть !!!")
+async def upload_forto(message: types.Message):
+    image_from_pc = FSInputFile("sticker.webp")
+    await message.answer_photo(image_from_pc, caption="Пообщаемся?)")
+    await asyncio.sleep(2)
+    await message.answer("рад тебя видеть !!!")    
+
+# ping pong
+@dp.message()
+async def echo(message: types.Message):
+    await message.answer("Бот Дамира услышал: "+message.text)
 
 # непреривный режим работы бота
 async def main():

@@ -40,6 +40,15 @@ async def get_random(message: types.Message, command: CommandObject):
     num = randint(a, b)
     await message.reply(f"Случайное число получилось:\t {num}")
 
+# команда заблок
+@dp.message(Command(commands=["ban"]))
+async def zabanit(message: types.Message):
+    if not message.reply_to_message:
+        await message.reply("Пиши команду ban в ответ на сообщение")
+        return 
+    await message.bot.delete_message(chat_id=GROUP_ID, message_id = message.message_id)
+    await message.bot.ban_chat_member(chat_id=GROUP_ID, user_id=message.reply_to_message.from_user.id)
+
 # ping pong
 @dp.message()
 async def echo(message: types.Message):

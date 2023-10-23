@@ -9,7 +9,11 @@ from aiogram.types import FSInputFile
 from random import randint
 
 TELEGRAM_TOKEN = "6263696820:AAGfWdezicdY9eLKp-uM_UjHfqOjht-dIa8"
+# moya gruppa
+# GROUP_ID = "-1002100115467"
+# test grp
 GROUP_ID = "-1001674247269"
+
 
 # вывод отладочних сообщений в терминал
 logging.basicConfig(level=logging.INFO)
@@ -40,15 +44,26 @@ async def get_random(message: types.Message, command: CommandObject):
     num = randint(a, b)
     await message.reply(f"Случайное число получилось:\t {num}")
 
-# команда заблок
+# команда бан    
 @dp.message(Command(commands=["ban"]))
 async def zabanit(message: types.Message):
+    # user_status = await message.bot.get_chat_member(chat_id=GROUP_ID, user_id=message.from_user.id)
+    user_status = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id) 
+    if isinstance(user_status, types.chat_member_owner.ChatMemberOwner) or isinstance(user_status, types.chat_member_administrator.ChatMemberAdministrator):
+        print ("\n\n Owner not Admin - TRUE \n\n")
+    else:
+        print ("\n\n not Owner not Admin\n\n")
+        await message.reply(f"{message.from_user.first_name}, Ты не админ")
+        return 
+    
     if not message.reply_to_message:
         await message.reply("Пиши команду ban в ответ на сообщение")
         return 
-    await message.bot.delete_message(chat_id=GROUP_ID, message_id = message.message_id)
+    banned_user = message.reply_to_message.from_user.first_name
     await message.bot.ban_chat_member(chat_id=GROUP_ID, user_id=message.reply_to_message.from_user.id)
-
+    await message.bot.delete_message(chat_id=GROUP_ID, message_id=message.message_id)
+    await message.reply_to_message.reply(f'Пользователь {banned_user} забанен')
+    
 # ping pong
 @dp.message()
 async def echo(message: types.Message):
